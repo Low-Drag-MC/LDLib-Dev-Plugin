@@ -1,0 +1,39 @@
+<html>
+<body>
+Detects missing annotation dependencies based on registered dependency rules.
+<p>
+    This inspection validates that annotations are used together according to predefined dependency rules.
+    For example, if a field is annotated with @ConfigList, it should also be annotated with @Configurable.
+</p>
+<p>
+    Common dependency patterns:
+</p>
+<ul>
+    <li>Configuration annotations (@ConfigList, @ConfigSelector) require @Configurable</li>
+    <li>Sync data annotations (@UpdateListener) require @Managed or @ReadOnlyManaged</li>
+    <li>Setter annotations (@ConfigSetter) work best with @Configurable on the class</li>
+</ul>
+<p>
+    Example of correct usage:
+</p>
+<pre><code>
+@Configurable
+@ConfigList(configuratorMethod = "createConfigurator")
+private List&lt;String&gt; items;
+
+@Managed
+@UpdateListener(methodName = "onItemsChanged")
+private List&lt;String&gt; syncedItems;
+</code></pre>
+<p>
+    This inspection will report an error when:
+</p>
+<ul>
+    <li>An annotation is used without its required dependencies</li>
+    <li>The dependency relationship is violated at the field, class, or method level</li>
+</ul>
+<!-- tooltip end -->
+<p>This inspection helps maintain proper annotation usage patterns and ensures that dependent annotations
+    are used together correctly. Quick fixes are available to automatically add missing annotations.</p>
+</body>
+</html>

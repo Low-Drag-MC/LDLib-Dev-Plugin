@@ -1,0 +1,116 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <id>com.lowdragmc.ldlibdevplugin</id>
+
+    <!-- Public plugin name should be written in Title Case.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
+    <name>LDLib Dev Tool</name>
+
+    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+    <vendor url="https://github.com/Low-Drag-MC">LowDragMC</vendor>
+
+    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
+    <description><![CDATA[
+    This Plugin is used to enhance mod development with LDLib.
+    It supports annotations from LDLib.
+  ]]></description>
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.java</depends>
+    <depends>com.intellij.modules.json</depends>
+
+
+    <!-- Extension points defined by the plugin.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- block implicit usage -->
+        <implicitUsageProvider
+                implementation="com.lowdragmc.ldlibdevplugin.annotation.MethodImplicitUsageProvider"
+        />
+        <!-- add method jumping mark -->
+        <codeInsight.lineMarkerProvider
+                language="JAVA"
+                implementationClass="com.lowdragmc.ldlibdevplugin.annotation.MethodLineMarkerProvider"
+        />
+        <!-- annotation reference -->
+        <psi.referenceContributor
+                language="JAVA"
+                implementation="com.lowdragmc.ldlibdevplugin.annotation.AnnotationReferenceContributor"
+        />
+        
+        <!-- Annotation dependency inspection -->
+        <localInspection
+                language="JAVA"
+                displayName="Annotation Dependencies"
+                groupName="LDLib"
+                enabledByDefault="true"
+                level="ERROR"
+                implementationClass="com.lowdragmc.ldlibdevplugin.annotation.dependency.AnnotationDependencyInspection"
+        />
+        
+        <!-- Annotation type inspection -->
+        <localInspection
+                language="JAVA"
+                displayName="Annotation Field Type Compatibility"
+                groupName="LDLib"
+                enabledByDefault="true"
+                level="WARNING"
+                implementationClass="com.lowdragmc.ldlibdevplugin.annotation.type.AnnotationTypeInspection"
+        />
+        
+        <!-- annotation inspector -->
+        <localInspection
+                language="JAVA"
+                displayName="UpdateListener Method Missing"
+                groupName="LDLib"
+                enabledByDefault="true"
+                level="ERROR"
+                implementationClass="com.lowdragmc.ldlibdevplugin.annotation.updatelistener.UpdateListenerMethodMissingInspection"
+        />
+        <localInspection
+                language="JAVA"
+                displayName="ReadOnlyManaged Method Missing"
+                groupName="LDLib"
+                enabledByDefault="true"
+                level="ERROR"
+                implementationClass="com.lowdragmc.ldlibdevplugin.annotation.readonlymanaged.ReadOnlyManagedMethodMissingInspection"
+        />
+        <localInspection
+                language="JAVA"
+                displayName="ConfigSetter Method Issues"
+                groupName="LDLib"
+                enabledByDefault="true"
+                level="ERROR"
+                implementationClass="com.lowdragmc.ldlibdevplugin.annotation.configsetter.ConfigSetterMethodInspection"
+        />
+        <localInspection
+                language="JAVA"
+                displayName="Configurable Lang Key Missing"
+                groupName="LDLib"
+                enabledByDefault="true"
+                level="WARNING"
+                implementationClass="com.lowdragmc.ldlibdevplugin.annotation.configurable.ConfigurableLangInspection"
+        />
+        <localInspection
+                language="JAVA"
+                displayName="ConfigList Method Missing"
+                groupName="LDLib"
+                enabledByDefault="true"
+                level="ERROR"
+                implementationClass="com.lowdragmc.ldlibdevplugin.annotation.configlist.ConfigListMethodMissingInspection"
+        />
+        <localInspection
+                language="JAVA"
+                displayName="ConfigSelector Method Missing"
+                groupName="LDLib"
+                enabledByDefault="true"
+                level="ERROR"
+                implementationClass="com.lowdragmc.ldlibdevplugin.annotation.configselector.ConfigSelectorMethodMissingInspection"
+        />
+
+    </extensions>
+</idea-plugin>

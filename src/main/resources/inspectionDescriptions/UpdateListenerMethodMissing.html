@@ -1,0 +1,32 @@
+<html>
+<body>
+Detects missing or incorrectly defined UpdateListener methods for fields annotated with @UpdateListener.
+<p>
+    This inspection validates that for each field annotated with @UpdateListener, there exists a corresponding 
+    method with the specified name and correct signature. The method must have exactly two parameters of the 
+    same type as the annotated field (or its supertype).
+</p>
+<p>
+    Example of correct usage:
+</p>
+<pre><code>
+@UpdateListener(methodName = "onValueChanged")
+private int value;
+
+private void onValueChanged(int oldValue, int newValue) {
+    // Handle value change
+}
+</code></pre>
+<p>
+    This inspection will report an error if:
+</p>
+<ul>
+    <li>The specified method does not exist</li>
+    <li>The method has incorrect number of parameters (not exactly 2)</li>
+    <li>The parameter types don't match the field type</li>
+</ul>
+<!-- tooltip end -->
+<p>This inspection helps ensure that UpdateListener annotations are properly configured and their corresponding 
+   listener methods are correctly implemented.</p>
+</body>
+</html>

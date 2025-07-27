@@ -1,0 +1,38 @@
+<html>
+<body>
+Reports missing or invalid methods referenced by @ReadOnlyManaged annotations.
+
+<p>
+    The @ReadOnlyManaged annotation can reference up to three different methods for handling field serialization and
+    state management.
+    This inspection verifies that all referenced methods exist and have correct signatures.
+</p>
+
+<p>
+    The methods must follow these rules:
+<ul>
+    <li><strong>onDirtyMethod</strong>: No parameters, returns boolean, not static</li>
+    <li><strong>serializeMethod</strong>: One parameter (field type), returns Tag, not static</li>
+    <li><strong>deserializeMethod</strong>: One parameter (Tag), returns field type, not static</li>
+</ul>
+</p>
+
+<p>Example of correct usage:</p>
+<pre><code>
+@ReadOnlyManaged(
+    onDirtyMethod = "isDirty",
+    serializeMethod = "serialize", 
+    deserializeMethod = "deserialize"
+)
+private String data;
+
+private boolean isDirty() { return true; }
+private Tag serialize(String value) { return StringTag.valueOf(value); }
+private String deserialize(Tag tag) { return tag.getAsString(); }
+</code></pre>
+
+<!-- tooltip end -->
+<p>This inspection ensures that @ReadOnlyManaged annotations are properly configured with valid method references,
+    preventing runtime errors in LDLib serialization.</p>
+</body>
+</html>

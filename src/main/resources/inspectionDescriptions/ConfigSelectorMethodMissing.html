@@ -1,0 +1,38 @@
+
+<html>
+<body>
+Detects missing or incorrectly defined ConfigSelector sub configurator builder methods for fields annotated with @ConfigSelector.
+<p>
+    This inspection validates that for each field annotated with @ConfigSelector that specifies a subConfiguratorBuilder,
+    there exists a corresponding method with the specified name and correct signature. The sub configurator builder method
+    must have exactly two parameters: the first parameter should be compatible with the field type (same type or parent class),
+    and the second parameter must be ConfiguratorGroup or its subclass.
+</p>
+<p>
+    Example of correct usage:
+</p>
+<pre><code>
+@ConfigSelector(subConfiguratorBuilder = "buildSubConfigurator")
+private MyConfig config;
+
+private void buildSubConfigurator(MyConfig value, ConfiguratorGroup group) {
+    // Build sub-configurator for the config
+    group.addConfigurator("name", new StringConfigurator(value::getName, value::setName));
+    group.addConfigurator("value", new IntegerConfigurator(value::getValue, value::setValue));
+}
+</code></pre>
+<p>
+    This inspection will report an error if:
+</p>
+<ul>
+    <li>The specified sub configurator builder method does not exist</li>
+    <li>The method doesn't have exactly 2 parameters</li>
+    <li>The first parameter type is not compatible with the field type</li>
+    <li>The second parameter is not ConfiguratorGroup or its subclass</li>
+    <li>The method is static (should be non-static)</li>
+</ul>
+<!-- tooltip end -->
+<p>This inspection helps ensure that ConfigSelector annotations with sub configurator builders are properly configured
+    and their corresponding methods are correctly implemented for building sub-configurations.</p>
+</body>
+</html>

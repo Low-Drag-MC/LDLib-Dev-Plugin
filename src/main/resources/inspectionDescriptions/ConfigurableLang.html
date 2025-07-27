@@ -1,0 +1,41 @@
+<html>
+<body>
+Reports missing translation keys in Minecraft mod language files for @Configurable annotations.
+
+<p>
+    This inspection checks that translation keys specified in @Configurable annotation's 
+    "name" and "tips" attributes exist in the project's en_us.json language files located 
+    under src/main/resources/assets/mod_id/lang/ directories.
+</p>
+
+<p>
+    For each missing translation key, this inspection provides quick fixes to:
+    <ul>
+        <li>Add the key to an existing language file</li>
+        <li>Create a new language file if none exists</li>
+    </ul>
+</p>
+
+<p>Example of correct usage:</p>
+<pre><code>
+// Language file: src/main/resources/assets/examplemod/lang/en_us.json
+{
+  "config.example.name": "Example Configuration",
+  "config.example.tip1": "This is a helpful tip",
+  "config.example.tip2": "Another useful tip"
+}
+
+// Java code:
+@Configurable(
+    name = "config.example.name",
+    tips = {"config.example.tip1", "config.example.tip2"}
+)
+private String exampleField;
+</code></pre>
+
+<p>This inspection will report missing keys and provide quick fixes to add them to language files.</p>
+
+<!-- tooltip end -->
+<p>This inspection helps maintain consistency between @Configurable annotations and Minecraft mod language files, ensuring all configuration items have proper translations.</p>
+</body>
+</html>

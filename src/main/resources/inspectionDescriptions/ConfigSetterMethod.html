@@ -1,0 +1,56 @@
+<html>
+<body>
+Reports missing fields, missing @Configurable annotations, or invalid method signatures for @ConfigSetter annotated methods.
+
+<p>
+    The @ConfigSetter annotation references a field that must exist in the current class or its superclasses
+    and be annotated with @Configurable. The annotated method must have exactly one parameter that is
+    compatible with the referenced field type.
+</p>
+
+<p>
+    The requirements are:
+<ul>
+    <li>Referenced field must exist</li>
+    <li>Referenced field must be annotated with @Configurable</li>
+    <li>Method must not be static</li>
+    <li>Method must have exactly one parameter</li>
+    <li>Parameter type must be the same as or a supertype of the referenced field</li>
+</ul>
+</p>
+
+<p>Example of correct usage:</p>
+<pre><code>
+@Configurable
+private String configValue;
+
+@ConfigSetter(field = "configValue")
+public void setConfigValue(String value) {
+    this.configValue = value;
+}
+
+@ConfigSetter(field = "configValue")
+public void setConfigFromObject(Object value) { // Object is supertype of String
+    this.configValue = value.toString();
+}
+</code></pre>
+
+<p>Example of problems this inspection detects:</p>
+<pre><code>
+@ConfigSetter(field = "nonExistentField")  // Field doesn't exist
+public void setField(String value) { }
+
+private String configValue; // Missing @Configurable annotation
+@ConfigSetter(field = "configValue")
+public void setConfigValue(String value) { }
+
+@Configurable
+private String configValue;
+@ConfigSetter(field = "configValue")
+public static void setStatic(String value) { } // Static method
+</code></pre>
+
+<!-- tooltip end -->
+<p>This inspection ensures that @ConfigSetter annotations reference valid @Configurable fields and have compatible method signatures, preventing runtime configuration errors.</p>
+</body>
+</html>

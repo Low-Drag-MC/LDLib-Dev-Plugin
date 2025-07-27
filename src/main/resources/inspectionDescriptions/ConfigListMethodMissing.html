@@ -1,0 +1,48 @@
+<html>
+<body>
+Detects missing or incorrectly defined ConfigList methods for fields annotated with @ConfigList.
+<p>
+    This inspection validates that for each array or Collection field annotated with @ConfigList, there exist 
+    corresponding methods with the specified names and correct signatures. The configurator method must return a 
+    Configurator and accept Supplier and Consumer parameters with the element type, while the add default method 
+    must return the element type with no parameters.
+</p>
+<p>
+    Example of correct usage:
+</p>
+<pre><code>
+@ConfigList(
+    configuratorMethod = "createConfigurator",
+    addDefaultMethod = "createDefault"
+)
+private List&lt;String&gt; items;
+
+private Configurator createConfigurator(Supplier&lt;String&gt; getter, Consumer&lt;String&gt; setter) {
+    // Return configurator implementation
+    return new StringConfigurator(getter, setter);
+}
+
+private String createDefault() {
+    // Return default item
+    return "default";
+}
+</code></pre>
+<p>
+    This inspection will report an error if:
+</p>
+<ul>
+    <li>The annotated field is not an array or Collection type</li>
+    <li>The specified configurator method does not exist</li>
+    <li>The configurator method doesn't return Configurator or its subclass</li>
+    <li>The configurator method doesn't have exactly 2 parameters (Supplier, Consumer)</li>
+    <li>The configurator method parameter types don't match the element type</li>
+    <li>The specified add default method does not exist</li>
+    <li>The add default method has parameters (should be parameterless)</li>
+    <li>The add default method return type doesn't match the element type</li>
+</ul>
+<!-- tooltip end -->
+<p>This inspection helps ensure that ConfigList annotations are properly configured and their corresponding 
+   methods are correctly implemented for array and collection configuration management. The @ConfigList annotation 
+   can only be applied to array types (e.g., String[]) or Collection types (e.g., List&lt;String&gt;, Set&lt;Integer&gt;).</p>
+</body>
+</html>

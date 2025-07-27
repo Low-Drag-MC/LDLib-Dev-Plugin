@@ -1,0 +1,47 @@
+<html>
+<body>
+Detects incompatible field types for configuration annotations.
+<p>
+    This inspection validates that fields annotated with specific configuration annotations 
+    have compatible types as required by the annotation contract.
+</p>
+<p>
+    Type requirements:
+</p>
+<ul>
+    <li><strong>@ConfigColor</strong>: Field must be <code>int</code> or <code>Integer</code></li>
+    <li><strong>@ConfigHDR</strong>: Field must be <code>Vector4f</code></li>
+    <li><strong>@ConfigList</strong>: Field must be an array or <code>Collection</code> type</li>
+    <li><strong>@ConfigSelector</strong>: Field must be an <code>enum</code> or <code>String</code></li>
+</ul>
+<p>
+    Example of correct usage:
+</p>
+<pre><code>
+@ConfigColor
+private int backgroundColor = 0xFFFFFF;
+
+@ConfigHDR
+private Vector4f lightDirection = new Vector4f();
+
+@ConfigList
+private List&lt;String&gt; items = new ArrayList&lt;&gt;();
+
+@ConfigSelector
+private String mode = "default";
+
+@ConfigSelector
+private MyEnum option = MyEnum.OPTION1;
+</code></pre>
+<p>
+    This inspection will report a warning when:
+</p>  
+<ul>
+    <li>A field type doesn't match the expected type for the annotation</li>
+    <li>The field type is incompatible with the annotation's functionality</li>
+</ul>
+<!-- tooltip end -->
+<p>This inspection helps ensure that configuration annotations are applied to fields with 
+   appropriate types, providing clear warnings about type mismatches.</p>
+</body>
+</html>
