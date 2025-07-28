@@ -69,7 +69,13 @@ class ConfigurableLangInspection : AbstractBaseJavaLocalInspectionTool() {
             listOf(CreateLangFileQuickFix(key, key))
         } else {
             // Language files exist, provide key addition fixes
-            langFiles.map { langFile -> AddLangKeyQuickFix(langFile, key, key) }
+            langFiles.map { langFile ->
+                val value = key.substringAfterLast('.')
+                    .split("(?<=.)(?=\\p{Upper})".toRegex())
+                    .joinToString(" ")
+                    .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+                AddLangKeyQuickFix(langFile, key, value)
+            }
         }
         
         holder.registerProblem(
@@ -105,6 +111,8 @@ class CreateLangFileQuickFix(
         fullPath.parentFile.mkdirs()
         
         // Create file content
+        val value = key.substringAfterLast('.').split("(?<=.)(?=\\p{Upper})".toRegex()).joinToString(" ")
+            .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
         val content = """
             {
               "$key": "$value"
