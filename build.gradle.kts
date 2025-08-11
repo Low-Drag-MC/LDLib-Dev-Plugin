@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.lowdragmc"
-version = "1.1"
+version = "1.2"
 
 repositories {
     mavenCentral()
@@ -34,7 +34,8 @@ intellijPlatform {
         }
 
         changeNotes = """
-      Improve Lang Key Fixes
+      Added @ConfigHeader annotation support.
+      Added @ConfigColor annotation support.
     """.trimIndent()
     }
 }

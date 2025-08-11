@@ -1,4 +1,4 @@
-package com.lowdragmc.ldlibdevplugin.annotation.configurable
+package com.lowdragmc.ldlibdevplugin.annotation.lang
 
 import com.intellij.json.psi.JsonFile
 import com.intellij.json.psi.JsonProperty
@@ -8,11 +8,16 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.lowdragmc.ldlibdevplugin.LangFileUtils
 import com.lowdragmc.ldlibdevplugin.annotation.AnnotationReferenceHandler
 
-class ConfigurableLangReferenceHandler : AnnotationReferenceHandler() {
+class LangReferenceHandler : AnnotationReferenceHandler() {
     
     override fun canApply(value: String, annotation: PsiAnnotation, nameValuePair: PsiNameValuePair): Boolean {
-        return annotation.hasQualifiedName(ConfigurableUtils.CONFIGURABLE_ANNOTATION) &&
-                nameValuePair.name in setOf(ConfigurableUtils.NAME, ConfigurableUtils.TIPS, null)
+        return when {
+            annotation.hasQualifiedName(LangUtils.CONFIGURABLE_ANNOTATION) &&
+                    nameValuePair.name in setOf(LangUtils.NAME, LangUtils.TIPS, null) -> true
+            annotation.hasQualifiedName(LangUtils.CONFIG_HEADER_ANNOTATION) &&
+                    nameValuePair.name in setOf(LangUtils.VALUE, null) -> true
+            else -> false
+        }
     }
     
     override fun createPsiReference(

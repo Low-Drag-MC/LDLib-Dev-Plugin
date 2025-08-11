@@ -1,6 +1,6 @@
 package com.lowdragmc.ldlibdevplugin.annotation.dependency
 
-import com.lowdragmc.ldlibdevplugin.annotation.configurable.ConfigurableUtils
+import com.lowdragmc.ldlibdevplugin.annotation.lang.LangUtils
 
 /**
  * Central registry for annotation dependencies
@@ -47,7 +47,7 @@ object AnnotationDependencyRegistry {
         val simpleName = annotation.substringAfterLast('.')
         addDependency(
             annotation,
-            listOf(ConfigurableUtils.CONFIGURABLE_ANNOTATION),
+            listOf(LangUtils.CONFIGURABLE_ANNOTATION),
             "Fields with @$simpleName must also be annotated with @Configurable",
             severity
         )
@@ -56,7 +56,7 @@ object AnnotationDependencyRegistry {
     private fun registerAnnotationTemplates() {
         // Register templates for automatic annotation generation
         registerTemplate(
-            ConfigurableUtils.CONFIGURABLE_ANNOTATION,
+            LangUtils.CONFIGURABLE_ANNOTATION,
             mapOf("name" to "\"\""),
             AnnotationTarget.FIELD
         )

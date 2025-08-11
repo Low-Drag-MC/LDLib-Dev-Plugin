@@ -1,4 +1,4 @@
-package com.lowdragmc.ldlibdevplugin.annotation.configurable
+package com.lowdragmc.ldlibdevplugin.annotation.lang
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.project.Project
@@ -7,51 +7,86 @@ import com.intellij.psi.*
 import com.lowdragmc.ldlibdevplugin.LangFileUtils
 import java.io.File
 
-class ConfigurableLangInspection : AbstractBaseJavaLocalInspectionTool() {
+class LangInspection : AbstractBaseJavaLocalInspectionTool() {
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : JavaElementVisitor() {
             override fun visitField(field: PsiField) {
                 super.visitField(field)
                 
-                if (!field.hasAnnotation(ConfigurableUtils.CONFIGURABLE_ANNOTATION)) return
-                
-                val annotation = field.getAnnotation(ConfigurableUtils.CONFIGURABLE_ANNOTATION) ?: return
                 val project = field.project
                 
-                // Check name attribute
-                annotation.findAttributeValue(ConfigurableUtils.NAME)
-                    ?.let { it as? PsiLiteralExpression }
-                    ?.let { nameAttr ->
-                        val nameValue = nameAttr.value as? String
-                        if (!nameValue.isNullOrBlank()) {
-                            checkLangKey(holder, nameAttr, nameValue, project)
-                        }
+                // Check @Configurable annotation
+                if (field.hasAnnotation(LangUtils.CONFIGURABLE_ANNOTATION)) {
+                    val configurableAnnotation = field.getAnnotation(LangUtils.CONFIGURABLE_ANNOTATION)
+                    if (configurableAnnotation != null) {
+                        checkConfigurableAnnotation(holder, configurableAnnotation, project)
                     }
+                }
                 
-                // Check tips attribute
-                when (val tipsAttr = annotation.findAttributeValue(ConfigurableUtils.TIPS)) {
-                    // Tips as array
-                    is PsiArrayInitializerMemberValue -> {
-                        tipsAttr.initializers
-                            .filterIsInstance<PsiLiteralExpression>()
-                            .forEach { tipExpr ->
-                                val tipValue = tipExpr.value as? String
-                                if (!tipValue.isNullOrBlank()) {
-                                    checkLangKey(holder, tipExpr, tipValue, project)
-                                }
-                            }
-                    }
-                    // Tips as single string
-                    is PsiLiteralExpression -> {
-                        val tipValue = tipsAttr.value as? String
-                        if (!tipValue.isNullOrBlank()) {
-                            checkLangKey(holder, tipsAttr, tipValue, project)
-                        }
+                // Check @ConfigHeader annotation
+                if (field.hasAnnotation(LangUtils.CONFIG_HEADER_ANNOTATION)) {
+                    val configHeaderAnnotation = field.getAnnotation(LangUtils.CONFIG_HEADER_ANNOTATION)
+                    if (configHeaderAnnotation != null) {
+                        checkConfigHeaderAnnotation(holder, configHeaderAnnotation, project)
                     }
                 }
             }
         }
+    }
+    
+    private fun checkConfigurableAnnotation(
+        holder: ProblemsHolder,
+        annotation: PsiAnnotation,
+        project: Project
+    ) {
+        // Check name attribute
+        annotation.findAttributeValue(LangUtils.NAME)
+            ?.let { it as? PsiLiteralExpression }
+            ?.let { nameAttr ->
+                val nameValue = nameAttr.value as? String
+                if (!nameValue.isNullOrBlank()) {
+                    checkLangKey(holder, nameAttr, nameValue, project)
+                }
+            }
+        
+        // Check tips attribute
+        when (val tipsAttr = annotation.findAttributeValue(LangUtils.TIPS)) {
+            // Tips as array
+            is PsiArrayInitializerMemberValue -> {
+                tipsAttr.initializers
+                    .filterIsInstance<PsiLiteralExpression>()
+                    .forEach { tipExpr ->
+                        val tipValue = tipExpr.value as? String
+                        if (!tipValue.isNullOrBlank()) {
+                            checkLangKey(holder, tipExpr, tipValue, project)
+                        }
+                    }
+            }
+            // Tips as single string
+            is PsiLiteralExpression -> {
+                val tipValue = tipsAttr.value as? String
+                if (!tipValue.isNullOrBlank()) {
+                    checkLangKey(holder, tipsAttr, tipValue, project)
+                }
+            }
+        }
+    }
+    
+    private fun checkConfigHeaderAnnotation(
+        holder: ProblemsHolder,
+        annotation: PsiAnnotation,
+        project: Project
+    ) {
+        // Check value attribute
+        annotation.findAttributeValue(LangUtils.VALUE)
+            ?.let { it as? PsiLiteralExpression }
+            ?.let { valueAttr ->
+                val value = valueAttr.value as? String
+                if (!value.isNullOrBlank()) {
+                    checkLangKey(holder, valueAttr, value, project)
+                }
+            }
     }
     
     private fun checkLangKey(

@@ -7,7 +7,7 @@ import com.intellij.util.ProcessingContext
 import com.lowdragmc.ldlibdevplugin.annotation.configlist.ConfigListReferenceHandler
 import com.lowdragmc.ldlibdevplugin.annotation.configselector.ConfigSelectorReferenceHandler
 import com.lowdragmc.ldlibdevplugin.annotation.configsetter.ConfigSetterReferenceHandler
-import com.lowdragmc.ldlibdevplugin.annotation.configurable.ConfigurableLangReferenceHandler
+import com.lowdragmc.ldlibdevplugin.annotation.lang.LangReferenceHandler
 import com.lowdragmc.ldlibdevplugin.annotation.readonlymanaged.ReadOnlyManagedReferenceHandler
 import com.lowdragmc.ldlibdevplugin.annotation.updatelistener.UpdateListenerReferenceHandler
 
@@ -26,7 +26,7 @@ class AnnotationReferenceProvider : PsiReferenceProvider() {
         UpdateListenerReferenceHandler(),
         ReadOnlyManagedReferenceHandler(),
         ConfigSetterReferenceHandler(),
-        ConfigurableLangReferenceHandler(),
+        LangReferenceHandler(),
         ConfigListReferenceHandler(),
         ConfigSelectorReferenceHandler(),
     )

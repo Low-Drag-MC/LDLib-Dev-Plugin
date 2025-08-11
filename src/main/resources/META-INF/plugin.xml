@@ -93,7 +93,7 @@
                 groupName="LDLib"
                 enabledByDefault="true"
                 level="WARNING"
-                implementationClass="com.lowdragmc.ldlibdevplugin.annotation.configurable.ConfigurableLangInspection"
+                implementationClass="com.lowdragmc.ldlibdevplugin.annotation.lang.LangInspection"
         />
         <localInspection
                 language="JAVA"
