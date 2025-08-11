@@ -54,7 +54,7 @@ jobs:
         
       - name: Publish plugin
         env:
-          PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+          PUBLISH_TOKEN: ${{ secrets.JETBRAINS_PUBLISH_TOKEN }}
         run: |
           ./gradlew publishPlugin \
             -Pchannel="${{ github.event.inputs.channel }}" \
