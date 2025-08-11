@@ -38,6 +38,11 @@ intellijPlatform {
       Added @ConfigColor annotation support.
     """.trimIndent()
     }
+    
+    publishing {
+        token = providers.environmentVariable("PUBLISH_TOKEN")
+        channels = listOf(providers.gradleProperty("channel").getOrElse("default"))
+    }
 }
 
 tasks {

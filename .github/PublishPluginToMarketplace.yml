@@ -1,0 +1,70 @@
+name: Publish Plugin to Marketplace
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Plugin version (leave empty to use version from build.gradle.kts)'
+        required: false
+        default: ''
+      channel:
+        description: 'Release channel'
+        required: true
+        default: 'default'
+        type: choice
+        options:
+          - default
+          - beta
+          - alpha
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+        
+      - name: Update version if specified
+        if: ${{ github.event.inputs.version != '' }}
+        run: |
+          sed -i 's/version = "[^"]*"/version = "${{ github.event.inputs.version }}"/' build.gradle.kts
+          echo "Updated version to ${{ github.event.inputs.version }}"
+          
+      - name: Build plugin
+        run: ./gradlew buildPlugin
+        
+      - name: Verify plugin
+        run: ./gradlew verifyPlugin
+        
+      - name: Run tests
+        run: ./gradlew test
+        
+      - name: Publish plugin
+        env:
+          PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+        run: |
+          ./gradlew publishPlugin \
+            -Pchannel="${{ github.event.inputs.channel }}" \
+            -PpublishToken="${PUBLISH_TOKEN}"
+            
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: plugin-build-${{ github.run_number }}
+          path: |
+            build/distributions/*.zip
+            build/reports/
