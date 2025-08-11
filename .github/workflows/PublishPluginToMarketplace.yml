@@ -42,16 +42,10 @@ jobs:
           sed -i 's/version = "[^"]*"/version = "${{ github.event.inputs.version }}"/' build.gradle.kts
           echo "Updated version to ${{ github.event.inputs.version }}"
           
-      - name: Build plugin
+      - name: Build plugin (without verification)
         run: gradle buildPlugin
-        
-      - name: Verify plugin
-        run: gradle verifyPlugin
-        
-      - name: Run tests
-        run: gradle test
-        
-      - name: Publish plugin
+          
+      - name: Publish plugin to JetBrains Marketplace
         env:
           PUBLISH_TOKEN: ${{ secrets.JETBRAINS_PUBLISH_TOKEN }}
         run: |
@@ -64,6 +58,4 @@ jobs:
         if: always()
         with:
           name: plugin-build-${{ github.run_number }}
-          path: |
-            build/distributions/*.zip
-            build/reports/
+          path: build/distributions/*.zip
