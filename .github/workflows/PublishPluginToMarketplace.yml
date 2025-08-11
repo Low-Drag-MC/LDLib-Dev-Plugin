@@ -33,10 +33,9 @@ jobs:
           
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-        
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-        
+        with:
+          gradle-version: '8.11'
+          
       - name: Update version if specified
         if: ${{ github.event.inputs.version != '' }}
         run: |
@@ -44,19 +43,19 @@ jobs:
           echo "Updated version to ${{ github.event.inputs.version }}"
           
       - name: Build plugin
-        run: ./gradlew buildPlugin
+        run: gradle buildPlugin
         
       - name: Verify plugin
-        run: ./gradlew verifyPlugin
+        run: gradle verifyPlugin
         
       - name: Run tests
-        run: ./gradlew test
+        run: gradle test
         
       - name: Publish plugin
         env:
           PUBLISH_TOKEN: ${{ secrets.JETBRAINS_PUBLISH_TOKEN }}
         run: |
-          ./gradlew publishPlugin \
+          gradle publishPlugin \
             -Pchannel="${{ github.event.inputs.channel }}" \
             -PpublishToken="${PUBLISH_TOKEN}"
             
