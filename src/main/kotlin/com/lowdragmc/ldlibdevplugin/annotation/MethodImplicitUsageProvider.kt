@@ -3,6 +3,7 @@ package com.lowdragmc.ldlibdevplugin.annotation
 import com.intellij.codeInsight.daemon.ImplicitUsageProvider
 import com.intellij.psi.*
 import com.lowdragmc.ldlibdevplugin.annotation.configlist.ConfigListUtils
+import com.lowdragmc.ldlibdevplugin.annotation.configsearch.ConfigSearchUtils
 import com.lowdragmc.ldlibdevplugin.annotation.configselector.ConfigSelectorUtils
 import com.lowdragmc.ldlibdevplugin.annotation.configsetter.ConfigSetterUtils
 import com.lowdragmc.ldlibdevplugin.annotation.readonlymanaged.ReadOnlyManagedUtils
@@ -37,6 +38,11 @@ class MethodImplicitUsageProvider : ImplicitUsageProvider {
 
         // Check ConfigSelector methods
         if (ConfigSelectorUtils.findConfigSelectorField(element, containingClass) != null) {
+            return true
+        }
+
+        // Check ConfigSearch methods
+        if (ConfigSearchUtils.findConfigSearchField(element, containingClass) != null) {
             return true
         }
 

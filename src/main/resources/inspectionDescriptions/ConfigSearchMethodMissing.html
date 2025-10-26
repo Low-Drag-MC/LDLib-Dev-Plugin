@@ -1,0 +1,35 @@
+<html>
+<body>
+Detects missing or incorrectly defined ConfigSearch search configurator methods for fields annotated with @ConfigSearch.
+<p>
+    This inspection validates that for each field annotated with @ConfigSearch that specifies a searchConfiguratorMethod,
+    there exists a corresponding method with the specified name and correct signature. The search configurator method
+    must have no parameters and return ISearchConfigurator.
+</p>
+<p>
+    Example of correct usage:
+</p>
+<pre><code>
+@ConfigSearch(searchConfiguratorMethod = "createSearchConfigurator")
+private Block block = Blocks.STONE;
+
+private ISearchConfigurator createSearchConfigurator() {
+    return new ISearchConfigurator() {
+        // Implement search configurator logic
+    };
+}
+</code></pre>
+<p>
+    This inspection will report an error if:
+</p>
+<ul>
+    <li>The specified search configurator method does not exist</li>
+    <li>The method has parameters (should be parameterless)</li>
+    <li>The method doesn't return ISearchConfigurator</li>
+    <li>The method is static (should be non-static)</li>
+</ul>
+<!-- tooltip end -->
+<p>This inspection helps ensure that ConfigSearch annotations are properly configured
+    and their corresponding methods are correctly implemented for searching or configuring.</p>
+</body>
+</html>

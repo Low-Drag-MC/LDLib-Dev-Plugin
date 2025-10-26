@@ -111,6 +111,13 @@
                 level="ERROR"
                 implementationClass="com.lowdragmc.ldlibdevplugin.annotation.configselector.ConfigSelectorMethodMissingInspection"
         />
-
+        <localInspection
+                language="JAVA"
+                displayName="ConfigSearch Method Missing"
+                groupName="LDLib"
+                enabledByDefault="true"
+                level="ERROR"
+                implementationClass="com.lowdragmc.ldlibdevplugin.annotation.configsearch.ConfigSearchMethodMissingInspection"
+        />
     </extensions>
 </idea-plugin>

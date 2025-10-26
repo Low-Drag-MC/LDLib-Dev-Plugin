@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 import com.lowdragmc.ldlibdevplugin.annotation.configlist.ConfigListReferenceHandler
+import com.lowdragmc.ldlibdevplugin.annotation.configsearch.ConfigSearchReferenceHandler
 import com.lowdragmc.ldlibdevplugin.annotation.configselector.ConfigSelectorReferenceHandler
 import com.lowdragmc.ldlibdevplugin.annotation.configsetter.ConfigSetterReferenceHandler
 import com.lowdragmc.ldlibdevplugin.annotation.lang.LangReferenceHandler
@@ -29,6 +30,7 @@ class AnnotationReferenceProvider : PsiReferenceProvider() {
         LangReferenceHandler(),
         ConfigListReferenceHandler(),
         ConfigSelectorReferenceHandler(),
+        ConfigSearchReferenceHandler(),
     )
 
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {

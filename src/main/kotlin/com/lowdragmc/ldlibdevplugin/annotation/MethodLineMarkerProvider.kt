@@ -9,6 +9,7 @@ import com.intellij.psi.PsiIdentifier
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.PsiField
 import com.lowdragmc.ldlibdevplugin.annotation.configlist.ConfigListUtils
+import com.lowdragmc.ldlibdevplugin.annotation.configsearch.ConfigSearchUtils
 import com.lowdragmc.ldlibdevplugin.annotation.configselector.ConfigSelectorUtils
 import com.lowdragmc.ldlibdevplugin.annotation.configsetter.ConfigSetterUtils
 import com.lowdragmc.ldlibdevplugin.annotation.readonlymanaged.ReadOnlyManagedUtils
@@ -58,8 +59,17 @@ class MethodLineMarkerProvider : LineMarkerProvider {
                         .setTooltipText("Navigate to ConfigSelector field: ${configSelectorField.name}")
                         .createLineMarkerInfo(element)
                 }
+
+                // find the target field with @ConfigSearch
+                val configSearchField = ConfigSearchUtils.findConfigSearchField(parent, containingClass)
+                if (configSearchField != null) {
+                    return NavigationGutterIconBuilder.create(AllIcons.Nodes.Field)
+                        .setTarget(configSearchField)
+                        .setTooltipText("Navigate to ConfigSearch field: ${configSearchField.name}")
+                        .createLineMarkerInfo(element)
+                }
             }
-            
+
             is PsiField -> {
                 val containingClass = parent.containingClass ?: return null
 
