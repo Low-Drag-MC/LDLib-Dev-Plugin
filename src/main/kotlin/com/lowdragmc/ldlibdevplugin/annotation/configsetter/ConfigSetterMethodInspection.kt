@@ -19,18 +19,18 @@ class ConfigSetterMethodInspection : AbstractBaseJavaLocalInspectionTool() {
 
                 val containingClass = method.containingClass ?: return
 
-                // find fields（won't check @Configurable）
+                // find fields（won't check @Configurable or @Persisted）
                 val fieldWithoutConfigurableCheck = ConfigSetterUtils.findFieldWithoutConfigurableCheck(method, containingClass)
                 val targetField = ConfigSetterUtils.findConfigSetterField(method, containingClass)
 
                 when {
                     targetField == null && fieldWithoutConfigurableCheck != null -> {
-                        // field exists without @Configurable
+                        // field exists without @Configurable or @Persisted
                         holder.registerProblem(
                             fieldNameAttr,
-                            "ConfigSetter field '$fieldName' is not annotated with @Configurable",
+                            "ConfigSetter field '$fieldName' is not annotated with @Configurable or @Persisted",
                             ProblemHighlightType.ERROR,
-                            AddConfigurableAnnotationQuickFix(fieldWithoutConfigurableCheck)
+                            ConfigSetterQuickFix(fieldWithoutConfigurableCheck)
                         )
                     }
                     fieldWithoutConfigurableCheck == null -> {
@@ -42,7 +42,7 @@ class ConfigSetterMethodInspection : AbstractBaseJavaLocalInspectionTool() {
                         )
                     }
                     targetField != null && !ConfigSetterUtils.isValidConfigSetterMethod(method, targetField.type) -> {
-                        // field exists and with @Configurable，but parameters are incorrect
+                        // field exists and with @Configurable or @Persisted，but parameters are incorrect
                         val errorMessage = when {
                             method.hasModifierProperty(PsiModifier.STATIC) -> "ConfigSetter method '${method.name}' cannot be static"
                             method.parameterList.parameters.size != 1 -> "ConfigSetter method '${method.name}' must have exactly one parameter"
@@ -67,6 +67,22 @@ class ConfigSetterMethodInspection : AbstractBaseJavaLocalInspectionTool() {
     }
 }
 
+class ConfigSetterQuickFix(private val field: PsiField) : LocalQuickFix {
+    override fun getName(): String = "Add @Configurable or @Persisted annotation to '${field.name}'"
+
+    override fun getFamilyName(): String = "Add annotation"
+
+    override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
+        val elementFactory = JavaPsiFacade.getElementFactory(project)
+        // 默认添加 @Configurable
+        val annotation = elementFactory.createAnnotationFromText(
+            "@${ConfigSetterUtils.CONFIGURABLE_ANNOTATION}",
+            field
+        )
+        field.modifierList?.addBefore(annotation, field.modifierList?.firstChild)
+    }
+}
+
 class RemoveStaticModifierQuickFix(
     private val method: PsiMethod
 ) : LocalQuickFix {
@@ -78,25 +94,5 @@ class RemoveStaticModifierQuickFix(
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
         val modifierList = method.modifierList
         modifierList.setModifierProperty(PsiModifier.STATIC, false)
-    }
-}
-
-class AddConfigurableAnnotationQuickFix(
-    private val field: PsiField
-) : LocalQuickFix {
-
-    override fun getName(): String = "Add @Configurable annotation to field '${field.name}'"
-
-    override fun getFamilyName(): String = "Add @Configurable annotation"
-
-    override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-        val elementFactory = JavaPsiFacade.getElementFactory(project)
-        val annotation = elementFactory.createAnnotationFromText(
-            "@${ConfigSetterUtils.CONFIGURABLE_ANNOTATION}",
-            field
-        )
-
-        val modifierList = field.modifierList ?: return
-        modifierList.addBefore(annotation, modifierList.firstChild)
     }
 }

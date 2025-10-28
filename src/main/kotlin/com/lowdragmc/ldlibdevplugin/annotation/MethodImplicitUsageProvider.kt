@@ -7,8 +7,8 @@ import com.lowdragmc.ldlibdevplugin.annotation.configsearch.ConfigSearchUtils
 import com.lowdragmc.ldlibdevplugin.annotation.configselector.ConfigSelectorUtils
 import com.lowdragmc.ldlibdevplugin.annotation.configsetter.ConfigSetterUtils
 import com.lowdragmc.ldlibdevplugin.annotation.readonlymanaged.ReadOnlyManagedUtils
-import com.lowdragmc.ldlibdevplugin.annotation.updatelistener.UpdateListenerUtils
 import com.lowdragmc.ldlibdevplugin.annotation.skippersistedvalue.SkipPersistedValueUtils
+import com.lowdragmc.ldlibdevplugin.annotation.updatelistener.UpdateListenerUtils
 
 class MethodImplicitUsageProvider : ImplicitUsageProvider {
 

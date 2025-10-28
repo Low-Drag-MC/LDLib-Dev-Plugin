@@ -7,6 +7,7 @@ object ConfigSetterUtils {
 
     const val CONFIG_SETTER_ANNOTATION = "com.lowdragmc.lowdraglib2.configurator.annotation.ConfigSetter"
     const val CONFIGURABLE_ANNOTATION = "com.lowdragmc.lowdraglib2.configurator.annotation.Configurable"
+    const val PERSISTED_ANNOTATION = "com.lowdragmc.lowdraglib2.syncdata.annotation.Persisted"
     const val FIELD_ATTRIBUTE = "field"
 
     fun isAnnotatedMethod(method: PsiMethod): Boolean {
@@ -15,6 +16,14 @@ object ConfigSetterUtils {
 
     fun isConfigurableField(field: PsiField): Boolean {
         return field.hasAnnotation(CONFIGURABLE_ANNOTATION)
+    }
+
+    fun isPersistedField(field: PsiField): Boolean {
+        return field.hasAnnotation(PERSISTED_ANNOTATION)
+    }
+
+    fun isValidField(field: PsiField): Boolean {
+        return isConfigurableField(field) || isPersistedField(field)
     }
 
     fun getFieldName(method: PsiMethod): String? {
@@ -41,7 +50,7 @@ object ConfigSetterUtils {
 
         val field = findFieldInClassHierarchy(containingClass, fieldName)
 
-        return if (field != null && isConfigurableField(field)) field else null
+        return if (field != null && isValidField(field)) field else null
     }
 
     private fun findFieldInClassHierarchy(clazz: PsiClass, fieldName: String): PsiField? {
@@ -62,7 +71,7 @@ object ConfigSetterUtils {
     }
 
     fun findConfigSetterMethods(field: PsiField, containingClass: PsiClass): List<PsiMethod> {
-        if (!isConfigurableField(field)) return emptyList()
+        if (!isValidField(field)) return emptyList()
 
         val fieldName = field.name
         val result = mutableListOf<PsiMethod>()

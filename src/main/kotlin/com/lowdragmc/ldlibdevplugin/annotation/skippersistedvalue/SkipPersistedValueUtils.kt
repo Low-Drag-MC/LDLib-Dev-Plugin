@@ -9,6 +9,7 @@ object SkipPersistedValueUtils {
     const val SKIP_PERSISTED_VALUE_ANNOTATION = "com.lowdragmc.lowdraglib2.syncdata.annotation.SkipPersistedValue"
     const val FIELD_ATTRIBUTE = "field"
     const val CONFIGURABLE_ANNOTATION = "com.lowdragmc.lowdraglib2.configurator.annotation.Configurable"
+    const val PERSISTED_ANNOTATION = "com.lowdragmc.lowdraglib2.syncdata.annotation.Persisted"
 
     fun isAnnotatedMethod(method: PsiMethod): Boolean {
         return method.hasAnnotation(SKIP_PERSISTED_VALUE_ANNOTATION)
@@ -21,6 +22,14 @@ object SkipPersistedValueUtils {
 
     fun isConfigurableField(field: PsiField): Boolean {
         return field.hasAnnotation(CONFIGURABLE_ANNOTATION)
+    }
+
+    fun isPersistedField(field: PsiField): Boolean {
+        return field.hasAnnotation(PERSISTED_ANNOTATION)
+    }
+
+    fun isValidField(field: PsiField): Boolean {
+        return isConfigurableField(field) || isPersistedField(field)
     }
 
     /**
@@ -51,7 +60,7 @@ object SkipPersistedValueUtils {
     }
 
     /**
-     * Find the target field with @Configurable annotation
+     * Find the target field with @Configurable or @Persisted annotation
      */
     fun findSkipPersistedValueField(method: PsiMethod, containingClass: PsiClass): PsiField? {
         if (!isAnnotatedMethod(method)) return null
@@ -60,11 +69,11 @@ object SkipPersistedValueUtils {
 
         val field = findFieldInClassHierarchy(containingClass, fieldName)
 
-        return if (field != null && isConfigurableField(field)) field else null
+        return if (field != null && isValidField(field)) field else null
     }
 
     /**
-     * Find the field without checking @Configurable annotation (for quick fix suggestions)
+     * Find the field without checking @Configurable or @Persisted annotation (for quick fix suggestions)
      */
     fun findFieldWithoutConfigurableCheck(method: PsiMethod, containingClass: PsiClass): PsiField? {
         if (!isAnnotatedMethod(method)) return null
@@ -88,7 +97,7 @@ object SkipPersistedValueUtils {
      * Find all @SkipPersistedValue methods for a specific field
      */
     fun findSkipPersistedValueMethods(field: PsiField, containingClass: PsiClass): List<PsiMethod> {
-        if (!isConfigurableField(field)) return emptyList()
+        if (!isValidField(field)) return emptyList()
 
         val fieldName = field.name
         val result = mutableListOf<PsiMethod>()

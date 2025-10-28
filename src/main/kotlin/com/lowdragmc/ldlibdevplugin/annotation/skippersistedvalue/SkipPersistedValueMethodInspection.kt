@@ -3,7 +3,6 @@ package com.lowdragmc.ldlibdevplugin.annotation.skippersistedvalue
 import com.intellij.codeInspection.*
 import com.intellij.openapi.project.Project
 import com.intellij.psi.*
-import com.lowdragmc.ldlibdevplugin.annotation.AnnotationUtils
 
 class SkipPersistedValueMethodInspection : AbstractBaseJavaLocalInspectionTool() {
 
@@ -26,12 +25,12 @@ class SkipPersistedValueMethodInspection : AbstractBaseJavaLocalInspectionTool()
 
                 when {
                     targetField == null && fieldWithoutConfigurableCheck != null -> {
-                        // Field exists but doesn't have @Configurable
+                        // Field exists but doesn't have @Configurable or @Persisted
                         holder.registerProblem(
                             fieldNameAttr,
-                            "SkipPersistedValue field '$fieldName' is not annotated with @Configurable",
+                            "SkipPersistedValue field '$fieldName' is not annotated with @Configurable or @Persisted",
                             ProblemHighlightType.ERROR,
-                            AddConfigurableAnnotationQuickFix(fieldWithoutConfigurableCheck)
+                            SkipPersistedValueQuickFix(fieldWithoutConfigurableCheck)
                         )
                     }
                     fieldWithoutConfigurableCheck == null -> {
@@ -43,7 +42,7 @@ class SkipPersistedValueMethodInspection : AbstractBaseJavaLocalInspectionTool()
                         )
                     }
                     targetField != null && !SkipPersistedValueUtils.isValidSkipPersistedValueMethod(method, targetField.type) -> {
-                        // Field exists with @Configurable, but method signature is incorrect
+                        // Field exists with @Configurable or @Persisted, but method signature is incorrect
                         val errorMessage = when {
                             method.hasModifierProperty(PsiModifier.STATIC) -> 
                                 "SkipPersistedValue method '${method.name}' cannot be static"
@@ -75,13 +74,14 @@ class SkipPersistedValueMethodInspection : AbstractBaseJavaLocalInspectionTool()
     }
 }
 
-class AddConfigurableAnnotationQuickFix(private val field: PsiField) : LocalQuickFix {
-    override fun getName(): String = "Add @Configurable annotation to '${field.name}'"
+class SkipPersistedValueQuickFix(private val field: PsiField) : LocalQuickFix {
+    override fun getName(): String = "Add @Configurable or @Persisted annotation to '${field.name}'"
 
-    override fun getFamilyName(): String = "Add @Configurable annotation"
+    override fun getFamilyName(): String = "Add annotation"
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
         val elementFactory = JavaPsiFacade.getElementFactory(project)
+        // 默认添加 @Configurable
         val annotation = elementFactory.createAnnotationFromText(
             "@${SkipPersistedValueUtils.CONFIGURABLE_ANNOTATION}",
             field
