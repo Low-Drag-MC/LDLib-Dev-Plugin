@@ -10,6 +10,7 @@ import com.lowdragmc.ldlibdevplugin.annotation.configselector.ConfigSelectorRefe
 import com.lowdragmc.ldlibdevplugin.annotation.configsetter.ConfigSetterReferenceHandler
 import com.lowdragmc.ldlibdevplugin.annotation.lang.LangReferenceHandler
 import com.lowdragmc.ldlibdevplugin.annotation.readonlymanaged.ReadOnlyManagedReferenceHandler
+import com.lowdragmc.ldlibdevplugin.annotation.skippersistedvalue.SkipPersistedValueReferenceHandler
 import com.lowdragmc.ldlibdevplugin.annotation.updatelistener.UpdateListenerReferenceHandler
 
 class AnnotationReferenceContributor : PsiReferenceContributor() {
@@ -27,6 +28,7 @@ class AnnotationReferenceProvider : PsiReferenceProvider() {
         UpdateListenerReferenceHandler(),
         ReadOnlyManagedReferenceHandler(),
         ConfigSetterReferenceHandler(),
+        SkipPersistedValueReferenceHandler(),
         LangReferenceHandler(),
         ConfigListReferenceHandler(),
         ConfigSelectorReferenceHandler(),

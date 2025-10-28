@@ -14,6 +14,7 @@ import com.lowdragmc.ldlibdevplugin.annotation.configselector.ConfigSelectorUtil
 import com.lowdragmc.ldlibdevplugin.annotation.configsetter.ConfigSetterUtils
 import com.lowdragmc.ldlibdevplugin.annotation.readonlymanaged.ReadOnlyManagedUtils
 import com.lowdragmc.ldlibdevplugin.annotation.updatelistener.UpdateListenerUtils
+import com.lowdragmc.ldlibdevplugin.annotation.skippersistedvalue.SkipPersistedValueUtils
 
 class MethodLineMarkerProvider : LineMarkerProvider {
 
@@ -68,6 +69,15 @@ class MethodLineMarkerProvider : LineMarkerProvider {
                         .setTooltipText("Navigate to ConfigSearch field: ${configSearchField.name}")
                         .createLineMarkerInfo(element)
                 }
+
+                // find the target field with @Configurable for @SkipPersistedValue
+                val skipPersistedValueField = SkipPersistedValueUtils.findSkipPersistedValueField(parent, containingClass)
+                if (skipPersistedValueField != null) {
+                    return NavigationGutterIconBuilder.create(AllIcons.Nodes.Field)
+                        .setTarget(skipPersistedValueField)
+                        .setTooltipText("Navigate to field with @SkipPersistedValue: ${skipPersistedValueField.name}")
+                        .createLineMarkerInfo(element)
+                }
             }
 
             is PsiField -> {
@@ -79,6 +89,15 @@ class MethodLineMarkerProvider : LineMarkerProvider {
                     return NavigationGutterIconBuilder.create(AllIcons.Nodes.Method)
                         .setTargets(configSetterMethods)
                         .setTooltipText("Navigate to ConfigSetter methods for field: ${parent.name}")
+                        .createLineMarkerInfo(element)
+                }
+
+                // find SkipPersistedValue methods for this field
+                val skipPersistedValueMethods = SkipPersistedValueUtils.findSkipPersistedValueMethods(parent, containingClass)
+                if (skipPersistedValueMethods.isNotEmpty()) {
+                    return NavigationGutterIconBuilder.create(AllIcons.Nodes.Method)
+                        .setTargets(skipPersistedValueMethods)
+                        .setTooltipText("Navigate to SkipPersistedValue methods for field: ${parent.name}")
                         .createLineMarkerInfo(element)
                 }
             }

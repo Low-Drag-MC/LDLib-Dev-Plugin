@@ -8,6 +8,7 @@ import com.lowdragmc.ldlibdevplugin.annotation.configselector.ConfigSelectorUtil
 import com.lowdragmc.ldlibdevplugin.annotation.configsetter.ConfigSetterUtils
 import com.lowdragmc.ldlibdevplugin.annotation.readonlymanaged.ReadOnlyManagedUtils
 import com.lowdragmc.ldlibdevplugin.annotation.updatelistener.UpdateListenerUtils
+import com.lowdragmc.ldlibdevplugin.annotation.skippersistedvalue.SkipPersistedValueUtils
 
 class MethodImplicitUsageProvider : ImplicitUsageProvider {
 
@@ -43,6 +44,11 @@ class MethodImplicitUsageProvider : ImplicitUsageProvider {
 
         // Check ConfigSearch methods
         if (ConfigSearchUtils.findConfigSearchField(element, containingClass) != null) {
+            return true
+        }
+
+        // Check SkipPersistedValue methods
+        if (SkipPersistedValueUtils.findSkipPersistedValueField(element, containingClass) != null) {
             return true
         }
 

@@ -1,0 +1,39 @@
+<html>
+<body>
+Validates that methods annotated with <code>@SkipPersistedValue</code> correctly reference fields and have proper signatures.
+<p>
+    The inspection verifies that the method returns <code>boolean</code>, has exactly one parameter matching the field type,
+    and references a field annotated with <code>@Configurable</code>.
+</p>
+<p>
+    The <code>@SkipPersistedValue</code> annotation is used to conditionally skip persistence of field values.
+    The annotated method should return <code>true</code> if the value should not be persisted.
+</p>
+
+<p><b>Example (correct usage):</b></p>
+<pre><code>
+@Configurable
+int intField = 10;
+
+@SkipPersistedValue(field = "intField")
+public boolean skipIntFieldPersisted(int value) {
+    return value == 10;
+}
+</code></pre>
+
+<p><b>Problems detected:</b></p>
+<ul>
+    <li>Field specified in <code>field</code> attribute doesn't exist</li>
+    <li>Referenced field is not annotated with <code>@Configurable</code></li>
+    <li>Method doesn't return <code>boolean</code></li>
+    <li>Method has wrong number of parameters (must have exactly one)</li>
+    <li>Parameter type doesn't match the field type</li>
+    <li>Method is declared as <code>static</code></li>
+</ul>
+
+<!-- tooltip end -->
+<p>
+    This inspection helps ensure that skip persistence conditions are properly configured for synchronized data fields.
+</p>
+</body>
+</html>

@@ -41,7 +41,7 @@
                 language="JAVA"
                 implementation="com.lowdragmc.ldlibdevplugin.annotation.AnnotationReferenceContributor"
         />
-        
+
         <!-- Annotation dependency inspection -->
         <localInspection
                 language="JAVA"
@@ -119,5 +119,15 @@
                 level="ERROR"
                 implementationClass="com.lowdragmc.ldlibdevplugin.annotation.configsearch.ConfigSearchMethodMissingInspection"
         />
+        <localInspection
+                language="JAVA"
+                shortName="SkipPersistedValueMethodInspection"
+                displayName="SkipPersistedValue method validation"
+                groupName="LDLib Annotations"
+                enabledByDefault="true"
+                level="ERROR"
+                implementationClass="com.lowdragmc.ldlibdevplugin.annotation.skippersistedvalue.SkipPersistedValueMethodInspection"
+        />
+
     </extensions>
 </idea-plugin>
