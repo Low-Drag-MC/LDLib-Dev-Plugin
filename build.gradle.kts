@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.lowdragmc"
-version = "1.2"
+version = "1.3"
 
 repositories {
     mavenCentral()
@@ -34,9 +34,24 @@ intellijPlatform {
         }
 
         changeNotes = """
-      Added @ConfigHeader annotation support.
-      Added @ConfigColor annotation support.
-    """.trimIndent()
+            <h3>Version 1.3</h3>
+            <ul>
+               <li>Added @ConfigSearch annotation support</li>
+               <li>Added @SkipPersistedValueMethodInspection annotation support</li>
+            </ul>
+            <h3>Version 1.2</h3>
+            <ul>
+              <li> Added @ConfigHeader annotation support</li>
+              <li> Added @ConfigColor annotation support</li>
+              <li>Improved Lang key inspection and fixes</li>
+            </ul>
+            <h3>Version 1.1</h3>
+            <ul>
+              <li>Support for LDLib configuration annotations</li>
+              <li>Method reference and navigation for annotation values</li>
+              <li>Inspection and quick fixes for annotation usage</li>
+            </ul>
+        """.trimIndent()
     }
     
     publishing {
