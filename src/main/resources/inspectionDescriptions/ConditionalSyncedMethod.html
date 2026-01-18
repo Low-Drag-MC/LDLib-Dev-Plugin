@@ -1,0 +1,20 @@
+<html>
+<body>
+Reports fields annotated with <code>@ConditionalSynced</code> that do not have a valid corresponding evaluation method.
+<p>The evaluation method must meet the following requirements:</p>
+<ul>
+    <li>The method name must match the <code>methodName</code> attribute of the annotation.</li>
+    <li>The method must return <code>boolean</code>.</li>
+    <li>The method must have exactly one parameter, and its type must be compatible with the field's type.</li>
+</ul>
+<p><b>Example:</b></p>
+<pre><code>
+@ConditionalSynced(methodName = "shouldSync")
+int field = 10;
+
+public boolean shouldSync(int value) {
+    return value > 0;
+}
+</code></pre>
+</body>
+</html>

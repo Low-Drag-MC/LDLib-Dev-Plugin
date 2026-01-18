@@ -34,6 +34,11 @@ intellijPlatform {
         }
 
         changeNotes = """
+            <h3>Version 1.4</h3>
+            <ul>
+               <li>Added @ConditionalSynced annotation support</li>
+               <li>Added @RPCPacket annotation support</li>
+            </ul>
             <h3>Version 1.3</h3>
             <ul>
                <li>Added @ConfigSearch annotation support</li>

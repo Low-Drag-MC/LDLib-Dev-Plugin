@@ -33,6 +33,15 @@ object AnnotationDependencyRegistry {
         )
 
         addDependency(
+            "com.lowdragmc.lowdraglib2.syncdata.annotation.ConditionalSynced",
+            listOf(
+                "com.lowdragmc.lowdraglib2.syncdata.annotation.DescSynced"
+            ),
+            "Fields with @ConditionalSynced must also have @DescSynced",
+            DependencySeverity.ERROR
+        )
+
+        addDependency(
             "com.lowdragmc.lowdraglib2.syncdata.annotation.RequireRerender",
             listOf(
                 "com.lowdragmc.lowdraglib2.syncdata.annotation.DescSynced"

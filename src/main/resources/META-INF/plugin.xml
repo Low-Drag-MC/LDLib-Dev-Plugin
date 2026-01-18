@@ -41,7 +41,7 @@
                 language="JAVA"
                 implementation="com.lowdragmc.ldlibdevplugin.annotation.AnnotationReferenceContributor"
         />
-
+        
         <!-- Annotation dependency inspection -->
         <localInspection
                 language="JAVA"
@@ -113,6 +113,14 @@
         />
         <localInspection
                 language="JAVA"
+                displayName="ConditionalSynced Method Missing"
+                groupName="LDLib"
+                enabledByDefault="true"
+                level="ERROR"
+                implementationClass="com.lowdragmc.ldlibdevplugin.annotation.conditionalsynced.ConditionalSyncedMethodInspection"
+        />
+        <localInspection
+                language="JAVA"
                 displayName="ConfigSearch Method Missing"
                 groupName="LDLib"
                 enabledByDefault="true"
@@ -128,6 +136,13 @@
                 level="ERROR"
                 implementationClass="com.lowdragmc.ldlibdevplugin.annotation.skippersistedvalue.SkipPersistedValueMethodInspection"
         />
-
+        <localInspection
+                language="JAVA"
+                displayName="RPC Packet Parameters Mismatch"
+                groupName="LDLib"
+                enabledByDefault="true"
+                level="ERROR"
+                implementationClass="com.lowdragmc.ldlibdevplugin.annotation.rpc.RPCPacketParametersInspection"
+        />
     </extensions>
 </idea-plugin>

@@ -1,0 +1,23 @@
+<html>
+<body>
+Reports calls to <code>RPCPacketDistributor</code> where the provided arguments do not match the parameters of the target <code>@RPCPacket</code> method.
+<p>The inspection checks for:</p>
+<ul>
+    <li><b>Argument Count:</b> The number of arguments passed to the distributor must match the number of parameters in the target method (excluding the optional <code>RPCSender</code>).</li>
+    <li><b>Type Compatibility:</b> Each argument type must be compatible with the corresponding parameter type in the target method.</li>
+</ul>
+<p><b>Note:</b> If the target <code>@RPCPacket</code> method declares <code>RPCSender</code> as its first parameter, it is automatically injected by the system and should not be included in the distributor call arguments.</p>
+<p><b>Example:</b></p>
+<pre><code>
+// Target Method
+@RPCPacket("test")
+public static void handler(RPCSender sender, String msg, int count) { ... }
+
+// Correct Call
+RPCPacketDistributor.rpcToServer("test", "Hello", 1);
+
+// Incorrect Call (Count Mismatch)
+RPCPacketDistributor.rpcToServer("test", "Hello");
+</code></pre>
+</body>
+</html>

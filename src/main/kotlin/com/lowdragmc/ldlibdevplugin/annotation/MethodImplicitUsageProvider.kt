@@ -2,11 +2,13 @@ package com.lowdragmc.ldlibdevplugin.annotation
 
 import com.intellij.codeInsight.daemon.ImplicitUsageProvider
 import com.intellij.psi.*
+import com.lowdragmc.ldlibdevplugin.annotation.conditionalsynced.ConditionalSyncedUtils
 import com.lowdragmc.ldlibdevplugin.annotation.configlist.ConfigListUtils
 import com.lowdragmc.ldlibdevplugin.annotation.configsearch.ConfigSearchUtils
 import com.lowdragmc.ldlibdevplugin.annotation.configselector.ConfigSelectorUtils
 import com.lowdragmc.ldlibdevplugin.annotation.configsetter.ConfigSetterUtils
 import com.lowdragmc.ldlibdevplugin.annotation.readonlymanaged.ReadOnlyManagedUtils
+import com.lowdragmc.ldlibdevplugin.annotation.rpc.RPCPacketUtils
 import com.lowdragmc.ldlibdevplugin.annotation.skippersistedvalue.SkipPersistedValueUtils
 import com.lowdragmc.ldlibdevplugin.annotation.updatelistener.UpdateListenerUtils
 
@@ -15,10 +17,17 @@ class MethodImplicitUsageProvider : ImplicitUsageProvider {
     override fun isImplicitUsage(element: PsiElement): Boolean {
         if (element !is PsiMethod) return false
 
+        if (RPCPacketUtils.isRPCPacketMethod(element)) return true
+
         val containingClass = element.containingClass ?: return false
 
         // Check UpdateListener methods
         if (UpdateListenerUtils.findUpdateListenerField(element, containingClass) != null) {
+            return true
+        }
+
+        // Check UpdateListener methods
+        if (ConditionalSyncedUtils.findConditionalSyncedField(element, containingClass) != null) {
             return true
         }
 

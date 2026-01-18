@@ -4,12 +4,16 @@ import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.*
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
+import com.lowdragmc.ldlibdevplugin.annotation.conditionalsynced.ConditionalSyncedReferenceHandler
 import com.lowdragmc.ldlibdevplugin.annotation.configlist.ConfigListReferenceHandler
 import com.lowdragmc.ldlibdevplugin.annotation.configsearch.ConfigSearchReferenceHandler
 import com.lowdragmc.ldlibdevplugin.annotation.configselector.ConfigSelectorReferenceHandler
 import com.lowdragmc.ldlibdevplugin.annotation.configsetter.ConfigSetterReferenceHandler
 import com.lowdragmc.ldlibdevplugin.annotation.lang.LangReferenceHandler
 import com.lowdragmc.ldlibdevplugin.annotation.readonlymanaged.ReadOnlyManagedReferenceHandler
+import com.lowdragmc.ldlibdevplugin.annotation.rpc.RPCPacketMethodReference
+import com.lowdragmc.ldlibdevplugin.annotation.rpc.RPCPacketReferenceHandler
+import com.lowdragmc.ldlibdevplugin.annotation.rpc.RPCPacketUtils
 import com.lowdragmc.ldlibdevplugin.annotation.skippersistedvalue.SkipPersistedValueReferenceHandler
 import com.lowdragmc.ldlibdevplugin.annotation.updatelistener.UpdateListenerReferenceHandler
 
@@ -20,15 +24,40 @@ class AnnotationReferenceContributor : PsiReferenceContributor() {
             PlatformPatterns.psiElement(PsiLiteralExpression::class.java),
             AnnotationReferenceProvider()
         )
+
+        // RPCPacketDistributor
+        registrar.registerReferenceProvider(
+            PlatformPatterns.psiElement(PsiLiteralExpression::class.java),
+            object : PsiReferenceProvider() {
+                override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
+                    val literal = element as? PsiLiteralExpression ?: return PsiReference.EMPTY_ARRAY
+                    val packetId = literal.value as? String ?: return PsiReference.EMPTY_ARRAY
+
+                    val methodCall = PsiTreeUtil.getParentOfType(element, PsiMethodCallExpression::class.java) ?: return PsiReference.EMPTY_ARRAY
+                    val method = methodCall.resolveMethod() ?: return PsiReference.EMPTY_ARRAY
+
+                    if (method.containingClass?.qualifiedName == RPCPacketUtils.DISTRIBUTOR_CLASS) {
+                        // check packet id position is the first parameter (usually)
+                        val args = methodCall.argumentList.expressions
+                        if (args.indexOf(literal).let { it == 0 || (it == 1 && method.name == "rpcToPlayer") }) {
+                            return arrayOf(RPCPacketMethodReference(literal, packetId))
+                        }
+                    }
+                    return PsiReference.EMPTY_ARRAY
+                }
+            }
+        )
     }
 }
 
 class AnnotationReferenceProvider : PsiReferenceProvider() {
     private val handlers : List<AnnotationReferenceHandler> = listOf(
         UpdateListenerReferenceHandler(),
+        ConditionalSyncedReferenceHandler(),
+        SkipPersistedValueReferenceHandler(),
         ReadOnlyManagedReferenceHandler(),
         ConfigSetterReferenceHandler(),
-        SkipPersistedValueReferenceHandler(),
+        RPCPacketReferenceHandler(),
         LangReferenceHandler(),
         ConfigListReferenceHandler(),
         ConfigSelectorReferenceHandler(),
